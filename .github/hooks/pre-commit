@@ -1,0 +1,19 @@
+#!/bin/sh
+
+formatting_results=$(poetry run black --check --line-length 100 . 2>&1 > /dev/null)
+if [[ "$?" == "0" ]]; then
+    echo "✅ Linting"
+else
+    echo "❌ Linting"
+    echo "$formatting_results"
+	exit 1
+fi
+
+unit_test_results=$(poetry run pytest --no-header --no-summary -qq tests/unit)
+if [[ "$?" == "0" ]]; then
+	echo "✅ Unit Tests"
+else
+	echo "❌ Unit Tests"
+	echo "$unit_test_results"
+	exit 1
+fi

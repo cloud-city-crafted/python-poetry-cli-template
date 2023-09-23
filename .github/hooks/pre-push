@@ -1,0 +1,10 @@
+#!/bin/sh
+
+integration_test_results=$(poetry run pytest --no-header --no-summary -qq tests/integration)
+if [[ "$?" == "0" ]]; then
+	echo "✅ Integration Tests"
+else
+	echo "❌ Integration Tests"
+	echo "$integration_test_results"
+	exit 1
+fi
