@@ -1,4 +1,4 @@
-name: Scan Source Code
+name: Scan and Test Source Code
 
 on:
   workflow_dispatch:
@@ -11,8 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Source Code
         uses: actions/checkout@v3
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'poetry'
+
+      - name: Install Python Dependencies
+        run: poetry install
 
       - name: Run Vulnerability Scan
         uses: snyk/actions/python@master
@@ -26,3 +37,9 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
+
+      - name: Run Unit Tests
+        run: poetry run pytest tests/unit
+
+      - name: Run Integration Tests
+        run: poetry run pytest tests/integration
