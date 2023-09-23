@@ -16,17 +16,6 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v3
 
-      - name: Install Poetry
-        run: pipx install poetry
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          cache: 'poetry'
-
-      - name: Install Python Dependencies
-        run: poetry install
-
       - name: Run Vulnerability Scan
         uses: snyk/actions/python@master
         continue-on-error: true
@@ -39,6 +28,24 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
+
+  pytest-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'poetry'
+
+      - name: Install Python Dependencies
+        run: poetry install
 
       - name: Run Unit Tests
         run: poetry run pytest tests/unit
