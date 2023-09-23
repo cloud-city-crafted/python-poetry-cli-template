@@ -1,4 +1,4 @@
-name: Scan and Test Source Code
+name: Scan, Lint and Test Source Code
 
 on:
   workflow_dispatch:
@@ -29,7 +29,7 @@ jobs:
         with:
           sarif_file: snyk.sarif
 
-  pytest-run:
+  code-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -47,8 +47,11 @@ jobs:
       - name: Install Python Dependencies
         run: poetry install
 
-      - name: Run Unit Tests
-        run: poetry run pytest tests/unit
+      - name: Check Formatting
+        run: poetry run black --check --line-length 100 .
 
-      - name: Run Integration Tests
-        run: poetry run pytest tests/integration
+      - name: Lint Code
+        run: poetry run pylint src tests
+
+      - name: Run Unit and Integration Tests
+        run: poetry run pytest tests

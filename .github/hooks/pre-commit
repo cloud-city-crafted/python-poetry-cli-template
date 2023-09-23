@@ -2,10 +2,19 @@
 
 formatting_results=$(poetry run black --check --line-length 100 . 2>&1 > /dev/null)
 if [[ "$?" == "0" ]]; then
+    echo "✅ Formatting"
+else
+    echo "❌ Formatting"
+    echo "$formatting_results"
+	exit 1
+fi
+
+linting_results=$(poetry run pylint src tests)
+if [[ "$?" == "0" ]]; then
     echo "✅ Linting"
 else
     echo "❌ Linting"
-    echo "$formatting_results"
+    echo "$linting_results"
 	exit 1
 fi
 

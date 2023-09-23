@@ -1,8 +1,3 @@
-"""Serves as the main entrypoint for the package-name CLI tool.
-
-Package description.
-"""
-
 import argparse
 
 

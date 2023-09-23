@@ -8,6 +8,8 @@
 
 </div>
 
+[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
+
 ## 🎧 Quick Start
 
 Ensure [Python](https://www.python.org/downloads) and [Python Poetry](https://python-poetry.org/docs/#installation) are installed.
@@ -54,7 +56,7 @@ git config --local core.hooksPath .github/hooks/
 git config --local commit.template .github/.gitmessage
 ```
 
-These will ensure commit messages are consistent, code is correctly formatted, and tests before committing or pushing.
+These will ensure commit messages are consistent, code is correctly formatted and linted, and tests before committing or pushing.
 
 Style decisions are based on the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
 
