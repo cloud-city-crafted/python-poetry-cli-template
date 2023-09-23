@@ -2,14 +2,23 @@
 
 formatting_results=$(poetry run black --check --line-length 100 . 2>&1 > /dev/null)
 if [[ "$?" == "0" ]]; then
-    echo "✅ Linting"
+    echo "✅ Formatting"
 else
-    echo "❌ Linting"
+    echo "❌ Formatting"
     echo "$formatting_results"
 	exit 1
 fi
 
-unit_test_results=$(poetry run pytest --no-header --no-summary -qq tests/unit)
+linting_results=$(poetry run pylint src tests)
+if [[ "$?" == "0" ]]; then
+    echo "✅ Linting"
+else
+    echo "❌ Linting"
+    echo "$linting_results"
+	exit 1
+fi
+
+unit_test_results=$(poetry run pytest --no-header --no-summary -qq tests/unit --cov-fail-under=90)
 if [[ "$?" == "0" ]]; then
 	echo "✅ Unit Tests"
 else
