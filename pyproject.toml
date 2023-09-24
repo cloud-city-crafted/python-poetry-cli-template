@@ -21,6 +21,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.11"
+requests = "^2.31.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.0"
@@ -45,7 +46,7 @@ disable = ["missing-module-docstring"]
 minversion = "7.4.0"
 pythonpath = "src"
 testpaths = "tests/unit/package_name"
-addopts = "-vv --import-mode=importlib --cov=src/package_name --cov-report term-missing:skip-covered --cov-branch"
+addopts = "-vv --import-mode=importlib"
 
 [tool.poetry.scripts]
 package-name = "package_name.cli:run"

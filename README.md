@@ -44,6 +44,7 @@ You can specify different paths to run different groupings of tests:
 ```shell
 pytest tests/unit         # Run unit tests
 pytest tests/integration  # Run integration tests
+pytest tests/e2e          # Run end-to-end tests
 pytest tests              # Run all tests
 ```
 
