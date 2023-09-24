@@ -1,4 +1,5 @@
 import argparse
+from importlib import metadata
 import requests
 
 
@@ -11,18 +12,25 @@ def run() -> None:
     parser = _get_parser()
     args = parser.parse_args()
 
-    if args.zen:
-        _get_zen()
+    if args.version:
+        _print_version()
+    elif args.zen:
+        _print_zen()
     else:
         parser.print_help()
 
 
-def _get_zen() -> str:
+def _print_zen() -> str:
     print(requests.get(url="https://api.github.com/zen", timeout=30).text)
 
 
 def _get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="package-name", description="Package description")
+    parser.add_argument("--version", "-v", action="store_true", help="print version")
     parser.add_argument("--zen", "-z", action="store_true", help="print a random sentence of Zen")
 
     return parser
+
+
+def _print_version() -> str:
+    print(metadata.version("package-name"))
