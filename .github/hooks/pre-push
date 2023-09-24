@@ -1,6 +1,6 @@
 #!/bin/sh
 
-test_results=$(poetry run pytest --no-header -qq tests --cov-fail-under=90)
+test_results=$(poetry run pytest --no-header -qq tests/integration)
 if [[ "$?" == "0" ]]; then
 	echo "✅ Integration Tests"
 else

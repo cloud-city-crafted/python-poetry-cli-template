@@ -53,5 +53,8 @@ jobs:
       - name: Lint Code
         run: poetry run pylint src tests
 
-      - name: Run Unit and Integration Tests
-        run: poetry run pytest tests --cov-fail-under=90
+      - name: Run Unit Tests
+        run: poetry run pytest --cov=src/package_name --cov-fail-under=90
+
+      - name: Run Integration Tests
+        run: poetry run pytest tests/integration
