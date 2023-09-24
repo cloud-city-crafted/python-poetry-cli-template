@@ -18,11 +18,11 @@ else
 	exit 1
 fi
 
-unit_test_results=$(poetry run pytest --no-header --no-summary -qq --cov=src/package_name --cov-report term-missing:skip-covered --cov-branch --cov-fail-under=90 tests/unit)
+test_results=$(poetry run pytest --no-header --no-summary -qq --cov=src/package_name --cov-report term-missing:skip-covered --cov-branch --cov-fail-under=90)
 if [[ "$?" == "0" ]]; then
-	echo "✅ Unit Tests"
+	echo "✅ Unit/Integration Tests"
 else
-	echo "❌ Unit Tests"
-	echo "$unit_test_results"
+	echo "❌ Unit/Integration Tests"
+	echo "$test_results"
 	exit 1
 fi

@@ -1,14 +1,23 @@
-import subprocess
+from unittest.mock import patch
+
+from package_name import cli
 
 
-def test_default_command() -> None:
-    with subprocess.Popen(args=["package-name"], stdout=subprocess.PIPE) as proc:
-        output = proc.stdout.read()
+@patch("package_name.cli.requests")
+@patch("package_name.cli.argparse._sys.argv")
+def test_cli_default_command(mock_argv, mock_requests) -> None:
+    mock_argv.__getitem__.return_value = []
 
-    assert output.decode() == (
-        "usage: package-name [-h] [--zen]\n\n"
-        "Package description\n\n"
-        "options:\n"
-        "  -h, --help  show this help message and exit\n"
-        "  --zen, -z   print a random sentence of Zen\n"
-    ), "should display default output"
+    cli.run()
+
+    mock_requests.get.assert_not_called()
+
+
+@patch("package_name.cli.requests")
+@patch("package_name.cli.argparse._sys.argv")
+def test_cli_zen_command(mock_argv, mock_requests) -> None:
+    mock_argv.__getitem__.return_value = ["--zen"]
+
+    cli.run()
+
+    mock_requests.get.assert_called_once_with(url="https://api.github.com/zen", timeout=30)

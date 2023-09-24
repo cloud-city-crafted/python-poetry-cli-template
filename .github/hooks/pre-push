@@ -1,10 +1,10 @@
 #!/bin/sh
 
-test_results=$(poetry run pytest --no-header -qq tests/integration)
+test_results=$(poetry run pytest --no-header -qq tests/e2e)
 if [[ "$?" == "0" ]]; then
-	echo "✅ Integration Tests"
+	echo "✅ End-to-End Tests"
 else
-	echo "❌ Integration Tests"
+	echo "❌ End-to-End Tests"
 	echo "$test_results"
 	exit 1
 fi
