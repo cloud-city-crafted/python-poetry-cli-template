@@ -9,7 +9,7 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  BUMP_TYPE: ${{ (startwith(env.BRANCH_NAME, 'bug') || startwith(env.BRANCH_NAME, 'fix')) && 'patch' || 'minor' }}
+  BUMP_TYPE: ${{ (startswith(env.BRANCH_NAME, 'bug') || startswith(env.BRANCH_NAME, 'fix')) && 'patch' || 'minor' }}
 
 jobs:
   test:
