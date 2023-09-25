@@ -48,3 +48,5 @@ jobs:
 
       - name: Create GitHub Release
         run: gh release create --generate-notes --latest 'v${{ steps.bump-version.outputs.new-version }}' ./dist/*.tar.gz
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
