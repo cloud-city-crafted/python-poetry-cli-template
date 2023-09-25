@@ -1,0 +1,48 @@
+name: Continuous Delivery
+
+on:
+  workflow_dispatch:
+
+  pull_request_target:
+    types: ['closed']
+    branches: ['main']
+
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  BUMP_TYPE: ${{ (startwith(env.BRANCH_NAME, 'bug') || startwith(env.BRANCH_NAME, 'fix')) && 'patch' || 'minor' }}
+
+jobs:
+  test:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'poetry'
+
+      - name: Install Python Dependencies
+        run: poetry install
+
+      - name: Run End-to-End Tests
+        run: poetry run pytest tests/e2e
+
+      - name: Bump Version
+        uses: actions/github-script@v6
+        id: bump-version
+        with:
+          script: poetry version '${{ env.BUMP_TYPE }}' --short
+          result-encoding: string
+
+      - name: Build Package
+        run: poetry build
+
+      - name: Create GitHub Release
+        run: gh release create --generate-notes --latest 'v${{ steps.bump-version.outputs.result }}' ./dist/*.tar.gz
