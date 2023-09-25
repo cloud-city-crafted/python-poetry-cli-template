@@ -9,7 +9,6 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  BUMP_TYPE: ${{ (startswith(env.BRANCH_NAME, 'bug') || startswith(env.BRANCH_NAME, 'fix')) && 'patch' || 'minor' }}
 
 jobs:
   test:
@@ -38,7 +37,7 @@ jobs:
         uses: actions/github-script@v6
         id: bump-version
         with:
-          script: poetry version '${{ env.BUMP_TYPE }}' --short
+          script: poetry version "${{ startsWith(env.BRANCH_NAME, 'bug') || startsWith(env.BRANCH_NAME, 'fix') && 'patch' || 'minor' }}" --short
           result-encoding: string
 
       - name: Build Package
