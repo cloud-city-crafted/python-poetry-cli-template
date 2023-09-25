@@ -35,7 +35,6 @@ jobs:
         run: poetry run pytest tests/e2e
 
       - name: Bump Version
-        uses: actions/github-script@v6
         id: bump-version
         run: |
           package_version="$(poetry version ${{ env.BUMP_TYPE }} --short)"
