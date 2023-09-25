@@ -9,6 +9,7 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  BUMP_TYPE: ${{ startsWith(env.BRANCH_NAME, 'bug') || startsWith(env.BRANCH_NAME, 'fix') && 'patch' || 'minor' }}
 
 jobs:
   test:
@@ -17,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Poetry
         run: pipx install poetry
@@ -36,12 +37,16 @@ jobs:
       - name: Bump Version
         uses: actions/github-script@v6
         id: bump-version
-        with:
-          script: poetry version "${{ startsWith(env.BRANCH_NAME, 'bug') || startsWith(env.BRANCH_NAME, 'fix') && 'patch' || 'minor' }}" --short
-          result-encoding: string
+        run: |
+          package_version="$(poetry version ${{ env.BUMP_TYPE }} --short)"
+          git config user.name ccc-service-account
+          git config user.email service@cloudcitycrafted.io
+          git commit -am "chore: Bump package version to v$package_version"
+          git push
+          echo "new-version=$package_version" >> $GITHUB_OUTPUT
 
       - name: Build Package
         run: poetry build
 
       - name: Create GitHub Release
-        run: gh release create --generate-notes --latest 'v${{ steps.bump-version.outputs.result }}' ./dist/*.tar.gz
+        run: gh release create --generate-notes --latest 'v${{ steps.bump-version.outputs.new-version }}' ./dist/*.tar.gz
