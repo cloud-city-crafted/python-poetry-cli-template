@@ -9,7 +9,6 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  BUMP_TYPE: ${{ startsWith(env.BRANCH_NAME, 'bug') || startsWith(env.BRANCH_NAME, 'fix') && 'patch' || 'minor' }}
 
 jobs:
   test:
@@ -37,7 +36,7 @@ jobs:
       - name: Bump Version
         id: bump-version
         run: |
-          package_version="$(poetry version ${{ env.BUMP_TYPE }} --short)"
+          package_version="$(poetry version ${{ startsWith(env.BRANCH_NAME, 'bug') || startsWith(env.BRANCH_NAME, 'fix') && 'patch' || 'minor' }} --short)"
           git config user.name ccc-service-account
           git config user.email service@cloudcitycrafted.io
           git commit -am "chore: Bump package version to v$package_version"
