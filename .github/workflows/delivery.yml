@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
   pull_request_target:
-    types: ['closed']
-    branches: ['main']
+    types: ["closed"]
+    branches: ["main"]
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
@@ -25,7 +25,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          cache: 'poetry'
+          cache: "poetry"
 
       - name: Install Python Dependencies
         run: poetry install

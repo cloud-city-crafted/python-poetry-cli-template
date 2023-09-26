@@ -5,13 +5,13 @@ on:
 
   pull_request:
     paths:
-      - '**.py'
+      - "**.py"
 
   push:
     branches:
-      - 'main'
+      - "main"
     paths:
-      - '**.py'
+      - "**.py"
 
 jobs:
   check:
@@ -27,7 +27,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          cache: 'poetry'
+          cache: "poetry"
 
       - name: Install Python Dependencies
         run: poetry install
@@ -52,7 +52,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          cache: 'poetry'
+          cache: "poetry"
 
       - name: Install Python Dependencies
         run: poetry install
@@ -84,7 +84,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          cache: 'poetry'
+          cache: "poetry"
 
       - name: Install Python Dependencies
         run: poetry install
