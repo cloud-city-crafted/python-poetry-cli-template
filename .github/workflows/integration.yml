@@ -4,14 +4,10 @@ on:
   workflow_dispatch:
 
   pull_request:
-    paths:
-      - "**.py"
 
   push:
     branches:
       - "main"
-    paths:
-      - "**.py"
 
 jobs:
   check:
@@ -32,8 +28,11 @@ jobs:
       - name: Install Python Dependencies
         run: poetry install
 
-      - name: Check Formatting
+      - name: Check Python Formatting
         run: poetry run black --check --line-length 100 .
+
+      - name: Check Non-Python Formatting
+        run: npx --yes prettier@3.0.3 . --no-config --check
 
       - name: Lint Code
         run: poetry run pylint src tests
