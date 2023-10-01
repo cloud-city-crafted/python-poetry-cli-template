@@ -18,12 +18,21 @@ else
 	exit 1
 fi
 
-linting_results=$(poetry run pylint src tests)
+python_linting_results=$(poetry run pylint src tests)
 if [[ "$?" == "0" ]]; then
-    echo "✅ Linting"
+    echo "✅ Python Linting"
 else
-    echo "❌ Linting"
-    echo "$linting_results"
+    echo "❌ Python Linting"
+    echo "$python_linting_results"
+	exit 1
+fi
+
+gh_actions_linting_results=$(act --dryrun)
+if [[ "$?" == "0" ]]; then
+    echo "✅ GitHub Actions Linting"
+else
+    echo "❌ GitHub Actions Linting"
+    echo "$gh_actions_linting_results"
 	exit 1
 fi
 

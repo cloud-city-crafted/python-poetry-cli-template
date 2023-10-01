@@ -9,15 +9,20 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  SERVICE_ACCOUNT_USERNAME: "ccc-service-account"
+  SERVICE_ACCOUNT_EMAIL_ADDRESS: "145862681+ccc-service-account@users.noreply.github.com"
 
 jobs:
-  test:
+  release:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Poetry
         run: pipx install poetry
@@ -28,25 +33,45 @@ jobs:
           cache: "poetry"
 
       - name: Install Python Dependencies
-        run: poetry install
+        run: poetry install --no-ansi --without dev
 
       - name: Run End-to-End Tests
         run: poetry run pytest tests/e2e
 
-      - name: Bump Version
-        id: bump-version
+      - name: Configure Git GPG Signing
+        id: configure-git-gpg
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_GPG_PRIVATE_KEY }}
+          GPG_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SERVICE_ACCOUNT_GPG_PASSPHRASE }}
         run: |
-          package_version="$(poetry version ${{ startsWith(env.BRANCH_NAME, 'bug') || startsWith(env.BRANCH_NAME, 'fix') && 'patch' || 'minor' }} --short)"
-          git config user.name ccc-service-account
-          git config user.email service@cloudcitycrafted.io
-          git commit -am "chore: Bump package version to v$package_version"
-          git push
-          echo "new-version=$package_version" >> $GITHUB_OUTPUT
+          echo "$GPG_PRIVATE_KEY" | gpg --import --pinentry-mode loopback --passphrase "$GPG_PRIVATE_KEY_PASSPHRASE"
+          key_metadata=$(gpg --with-colons --with-keygrip --list-secret-keys $SERVICE_ACCOUNT_EMAIL_ADDRESS)
+          keyid=$(echo "$key_metadata" | awk -F: 'NR == 1 { print $5 }')
+          keyfingerprint=$(echo "$key_metadata" | awk -F: 'NR == 2 { print $10 }')
+          keygrip=$(echo "$key_metadata" | awk -F: 'NR == 3 { print $10 }')
+          echo "$GPG_PRIVATE_KEY_PASSPHRASE" | "$(gpgconf --list-dirs libexecdir)"/gpg-preset-passphrase --preset $keygrip
 
-      - name: Build Package
-        run: poetry build
+          git config --global user.name $SERVICE_ACCOUNT_USERNAME
+          git config --global user.email $SERVICE_ACCOUNT_EMAIL_ADDRESS
+          git config --global user.signingkey $keyid
+          git config --global commit.gpgsign true
+          git config --global tag.gpgsign true
+
+          echo "gpg-key-fingerprint=$keyfingerprint" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
-        run: gh release create --generate-notes --latest 'v${{ steps.bump-version.outputs.new-version }}' ./dist/*.tar.gz
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUMP_TYPE: ${{ startsWith(env.BRANCH_NAME, 'bug') || startsWith(env.BRANCH_NAME, 'fix') && 'patch' || 'minor' }}
+        run: |
+          package_version="$(poetry version $BUMP_TYPE --short)"
+          poetry build
+          git add pyproject.toml
+          git commit -m "chore: Bump package version to v$package_version" --no-verify
+          git push
+          gh release create --generate-notes "v$package_version" "./dist/*$package_version0*"
+
+      - name: Clean Up GPG Credentials
+        env:
+          GPG_PRIVATE_KEY_FINGERPRINT: ${{ steps.configure-git-gpg.outputs.gpg-key-fingerprint }}
+        run: echo $GPG_PRIVATE_KEY_FINGERPRINT | xargs gpg --batch --yes --delete-secret-and-public-keys
