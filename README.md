@@ -48,6 +48,18 @@ pytest tests/e2e          # Run end-to-end tests
 pytest tests              # Run all tests
 ```
 
+### (Optional) Running CI Workflow Tests
+
+Ensure [Docker](https://docs.docker.com/get-docker/) and [`act`](https://github.com/nektos/act#installation) are installed and a [github-act-cache-server](https://github.com/sp-ricard-valverde/github-act-cache-server) is up and running.
+
+Local workflow runs are executed via `act`. Once all dependencies are setup, you can test workflows with:
+
+```shell
+# TBD script to run all tests
+```
+
+See [example `act` commands](https://github.com/nektos/act#example-commands) to better understand how to run GitHub actions locally.
+
 ## Configuring Developer Standards
 
 Use `git` to install commit message, pre-commit, and pre-push commit hooks:

@@ -1,0 +1,6 @@
+--no-skip-checkout
+--pull=false
+--container-architecture linux/amd64
+--platform ubuntu-latest=ghcr.io/cloud-city-crafted/gh-runners:ubuntu-latest
+--env-file .env
+--secret-file secrets.env
