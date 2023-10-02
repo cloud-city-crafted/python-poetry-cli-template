@@ -52,6 +52,9 @@ Style decisions are based on the [Google Python Style Guide](https://google.gith
 | `poe test --suite e2e`         | Run e2e tests only                           | `PYTHONPATH=src poetry run pytest -vv --import-mode=importlib tests/e2e`                                                                                                                                          |
 | `poe test --suite integration` | Run integration tests only (with coverage)   | `PYTHONPATH=src poetry run pytest -vv --import-mode=importlib --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/integration`            |
 | `poe test --suite unit`        | Run unit tests only (with coverage)          | `PYTHONPATH=src poetry run pytest -vv --import-mode=importlib --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit`                   |
+| `poe check`                    | Run formatting and linting checks            | `poetry run black --check --line-length 100 . && npx --yes prettier@3.0.3 . --no-config --check && poetry run pylint src tests`                                                                                   |
+| `poe check --type format`      | Run formatting checks only                   | `poetry run black --check --line-length 100 . && npx --yes prettier@3.0.3 . --no-config --check && act --dryrun`                                                                                                  |
+| `poe check --type lint`        | Run linting checks only                      | `poetry run pylint src tests`                                                                                                                                                                                     |
 
 ## 🧪 Testing Configuration
 
