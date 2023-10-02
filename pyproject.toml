@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "package-name"
-version = "1.3.0"
+version = "1.4.0"
 description = "Package description"
 license = "MIT"
 authors = ["Author Name <author.email@example.com>"]
