@@ -45,11 +45,39 @@ disable = ["missing-module-docstring"]
 [tool.pytest.ini_options]
 minversion = "7.4.0"
 pythonpath = "src"
-testpaths = ["tests/unit", "tests/integration"]
 addopts = "-vv --import-mode=importlib"
 
-[tool.poetry.scripts]
+[tool.poe.tasks]
 package-name = "package_name.cli:run"
+
+[tool.poe.tasks.test]
+help = "Run application tests"
+control.expr = "suite"
+args = [{ name = "suite", help = "Filter tests based on suite name: [all|e2e|integration|unit]" }]
+
+  [[tool.poe.tasks.test.switch]]
+  case = "all"
+  help = "Run all tests (without coverage)"
+  cmd = "pytest"
+
+  [[tool.poe.tasks.test.switch]]
+  case = "e2e"
+  help = "Run e2e tests only"
+  cmd = "pytest tests/e2e"
+
+  [[tool.poe.tasks.test.switch]]
+  case = "integration"
+  help = "Run integration tests only (with coverage)"
+  cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/integration"
+
+  [[tool.poe.tasks.test.switch]]
+  case = "unit"
+  help = "Run unit tests only (with coverage)"
+  cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit"
+
+  [[tool.poe.tasks.test.switch]]
+  help = "Default: Run unit and integration tests with coverage"
+  cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit tests/integration"
 
 [build-system]
 requires = ["poetry-core"]
