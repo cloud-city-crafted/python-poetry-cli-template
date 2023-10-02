@@ -27,7 +27,7 @@ else
 	exit 1
 fi
 
-test_results=$(poetry run pytest tests/unit tests/integration --cov=src/package_name --cov-fail-under=90 --no-header --no-summary -qq --cov=src/package_name --cov-report term-missing:skip-covered --cov-branch --cov-fail-under=90)
+test_results=$(poetry run pytest --no-header --no-summary -qq --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit tests/integration)
 if [[ "$?" == "0" ]]; then
 	echo "✅ Unit/Integration Tests"
 else
