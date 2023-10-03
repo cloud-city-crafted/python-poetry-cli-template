@@ -78,5 +78,5 @@ jobs:
 
       - name: Clean Up GPG Credentials
         env:
-          GPG_PRIVATE_KEY_FINGERPRINT: ${{ steps.configure-git-gpg.outputs.gpg-key-fingerprint }}
+          GPG_PRIVATE_KEY_FINGERPRINT: ${{ steps.configure-git.outputs.gpg-key-fingerprint }}
         run: echo $GPG_PRIVATE_KEY_FINGERPRINT | xargs gpg --batch --yes --delete-secret-and-public-keys
