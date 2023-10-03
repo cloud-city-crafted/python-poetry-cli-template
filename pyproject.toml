@@ -51,12 +51,16 @@ addopts = "-vv --import-mode=importlib"
 package-name = "package_name.cli:run"
 
 [tool.poe.tasks.test]
-help = "Default: Run integration tests with coverage"
-sequence = ["test-integration"]
+help = "Default: Run application test suites that support coverage"
+sequence = ["test-coverage"]
 
 [tool.poe.tasks.test-all]
-help = "Run application test suites"
+help = "Run all application test suites"
 sequence = ["test-unit", "test-integration", "test-e2e"]
+
+[tool.poe.tasks.test-coverage]
+help = "Run application test suites that support coverage"
+cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit tests/integration"
 
 [tool.poe.tasks.test-e2e]
 help = "Run e2e tests only"
@@ -67,7 +71,7 @@ help = "Run integration tests only (with coverage)"
 cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/integration"
 
 [tool.poe.tasks.test-unit]
-help = "Run unit tests only"
+help = "Run unit tests only (without coverage)"
 cmd = "pytest tests/unit"
 
 [tool.poe.tasks.check]

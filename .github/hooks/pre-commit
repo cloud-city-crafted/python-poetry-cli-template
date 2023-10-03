@@ -1,24 +1,15 @@
 #!/bin/sh
 
-black_formatting_results=$(poetry run black --check --line-length 100 . 2>&1 > /dev/null)
+formatting_results=$(poe format 2>&1 > /dev/null)
 if [[ "$?" == "0" ]]; then
-    echo "✅ Source Code Formatting"
+    echo "✅ Formatting"
 else
-    echo "❌ Source Code Formatting"
-    echo "$black_formatting_results"
+    echo "❌ Formatting"
+    echo "$formatting_results"
 	exit 1
 fi
 
-prettier_formatting_results=$(npx --yes prettier@3.0.3 . --no-config --check --log-level warn 2>&1 >/dev/null)
-if [[ "$?" == "0" ]]; then
-    echo "✅ Supplemental Code Formatting"
-else
-    echo "❌ Supplemental Code Formatting"
-    echo "$prettier_formatting_results"
-	exit 1
-fi
-
-linting_results=$(poetry run pylint src tests)
+linting_results=$(poe lint 2>&1 > /dev/null)
 if [[ "$?" == "0" ]]; then
     echo "✅ Linting"
 else
@@ -27,11 +18,11 @@ else
 	exit 1
 fi
 
-test_results=$(poetry run pytest --no-header --no-summary -qq --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit tests/integration)
+test_results=$(poe test)
 if [[ "$?" == "0" ]]; then
-	echo "✅ Unit/Integration Tests"
+	echo "✅ Test Coverage"
 else
-	echo "❌ Unit/Integration Tests"
+	echo "❌ Test Coverage"
 	echo "$test_results"
 	exit 1
 fi
