@@ -98,10 +98,6 @@ cmd = "black --check --line-length 100 ."
 help = "Run prettier against non-Python code"
 cmd = "npx --yes prettier@3.0.3 . --no-config --check"
 
-[tool.poe.tasks.package-name]
-help = "Execute package-name from this repo (useful for testing)"
-script = "package_name.cli:run"
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
