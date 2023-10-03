@@ -47,11 +47,11 @@ Style decisions are based on the [Google Python Style Guide](https://google.gith
 
 | Command                | Summary                                               | Bash Equivalent                                                                                                                                                                                                   |
 | ---------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `poe test`             | Run integration tests with coverage                   | `PYTHONPATH=src poetry run pytest -vv --import-mode=importlib --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit tests/integration` |
-| `poe test-all`         | Run all tests (without coverage)                      | `PYTHONPATH=src pytest -vv --import-mode=importlib tests`                                                                                                                                                         |
+| `poe test`             | Run application test suites that support coverage     | `PYTHONPATH=src poetry run pytest -vv --import-mode=importlib --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit tests/integration` |
+| `poe test-all`         | Run all tests (without coverage)                      | `PYTHONPATH=src pytest -vv --import-mode=importlib`                                                                                                                                                               |
 | `poe test-e2e`         | Run e2e tests only                                    | `PYTHONPATH=src poetry run pytest -vv --import-mode=importlib tests/e2e`                                                                                                                                          |
 | `poe test-integration` | Run integration tests only (with coverage)            | `PYTHONPATH=src poetry run pytest -vv --import-mode=importlib --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/integration`            |
-| `poe test-unit`        | Run unit tests only (with coverage)                   | `PYTHONPATH=src poetry run pytest -vv --import-mode=importlib --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit`                   |
+| `poe test-unit`        | Run unit tests only (without coverage)                | `PYTHONPATH=src poetry run pytest -vv --import-mode=importlib tests/unit`                                                                                                                                         |
 | `poe check`            | Run all formatting and linting tools against codebase | `poetry run black --check --line-length 100 . && npx --yes prettier@3.0.3 . --no-config --check && poetry run pylint src tests`                                                                                   |
 | `poe format`           | Run all formatting tools against codebase             | `poetry run black --check --line-length 100 . && npx --yes prettier@3.0.3 . --no-config --check`                                                                                                                  |
 | `poe format-black`     | Run black against Python source code                  | `poetry run black --check --line-length 100 .`                                                                                                                                                                    |
@@ -70,7 +70,7 @@ Running `pytest` with no arguments will:
 - Override pytest's historical default import mode to `importlib` which is recommended for new projects (`--import-mode=importlib`)
 - Run all available test items in [`./tests/`](./tests)
 
-Tests are grouped by categories into different paths:
+Tests are grouped into suites using different path names:
 
 ```shell
 tests/
