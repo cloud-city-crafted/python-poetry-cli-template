@@ -76,7 +76,7 @@ jobs:
           poetry build
           git commit -am "chore: Bump package version to v$package_version" --no-verify
           git push
-          gh release create --generate-notes "v$package_version" "./dist/*$package_version0*"
+          gh release create --generate-notes "v$package_version" ./dist/*${package_version}*
 
       - name: Clean Up GPG Credentials
         env:
