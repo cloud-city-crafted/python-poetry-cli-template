@@ -1,6 +1,6 @@
 #!/bin/sh
 
-test_results=$(poetry run pytest --no-header -qq tests/e2e)
+test_results=$(poe test-e2e)
 if [[ "$?" == "0" ]]; then
 	echo "✅ End-to-End Tests"
 else

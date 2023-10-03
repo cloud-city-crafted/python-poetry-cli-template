@@ -45,11 +45,58 @@ disable = ["missing-module-docstring"]
 [tool.pytest.ini_options]
 minversion = "7.4.0"
 pythonpath = "src"
-testpaths = ["tests/unit", "tests/integration"]
 addopts = "-vv --import-mode=importlib"
 
 [tool.poetry.scripts]
 package-name = "package_name.cli:run"
+
+[tool.poe.tasks.test]
+help = "Default: Run application test suites that support coverage"
+sequence = ["test-coverage"]
+
+[tool.poe.tasks.test-all]
+help = "Run all application test suites"
+sequence = ["test-unit", "test-integration", "test-e2e"]
+
+[tool.poe.tasks.test-coverage]
+help = "Run application test suites that support coverage"
+cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit tests/integration"
+
+[tool.poe.tasks.test-e2e]
+help = "Run e2e tests only"
+cmd = "pytest tests/e2e"
+
+[tool.poe.tasks.test-integration]
+help = "Run integration tests only (with coverage)"
+cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/integration"
+
+[tool.poe.tasks.test-unit]
+help = "Run unit tests only (without coverage)"
+cmd = "pytest tests/unit"
+
+[tool.poe.tasks.check]
+help = "Check code quality"
+sequence = ["format", "lint"]
+
+[tool.poe.tasks.lint]
+help = "Run all linting tools against codebase"
+sequence = ["lint-pylint"]
+
+[tool.poe.tasks.lint-pylint]
+help = "Lint Python source code and tests with pylint"
+cmd = "pylint --verbose --score y src tests"
+
+[tool.poe.tasks.format]
+help = "Run all formatting tools against codebase"
+sequence = ["format-black", "format-prettier"]
+
+[tool.poe.tasks.format-black]
+help = "Run black against Python source code"
+cmd = "black --check --line-length 100 ."
+
+[tool.poe.tasks.format-prettier]
+help = "Run prettier against non-Python code"
+cmd = "npx --yes prettier@3.0.3 . --no-config --check"
 
 [build-system]
 requires = ["poetry-core"]
