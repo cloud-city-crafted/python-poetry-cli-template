@@ -19,7 +19,7 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Install Poetry
         run: pipx install poetry
@@ -69,7 +69,7 @@ jobs:
 
       - name: Create GitHub Release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           BUMP_TYPE: ${{ startsWith(env.BRANCH_NAME, 'bug') || startsWith(env.BRANCH_NAME, 'fix') && 'patch' || 'minor' }}
         run: |
           package_version="$(poetry version $BUMP_TYPE --short)"
