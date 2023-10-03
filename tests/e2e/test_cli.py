@@ -12,7 +12,7 @@ SEMVAR_PATTERN = (
 
 
 def test_cli_default() -> None:
-    output = os.popen("poetry run package-name").read()
+    output = os.popen("package-name").read()
 
     assert output == (
         "usage: package-name [-h] [--version] [--zen]\n\n"
@@ -25,14 +25,14 @@ def test_cli_default() -> None:
 
 
 def test_cli_zen_flag() -> None:
-    output = os.popen("poetry run package-name --zen").read()
+    output = os.popen("package-name --zen").read()
 
     assert output.endswith(".\n"), "should return zen sentence"
     assert "usage" not in output, "should not print usage"
 
 
 def test_cli_version_flag() -> None:
-    output = os.popen("poetry run package-name --version").read()
+    output = os.popen("package-name --version").read()
 
     match = re.match(SEMVAR_PATTERN, output.strip())
     assert match is not None, "should print a semvar-compliant version"
