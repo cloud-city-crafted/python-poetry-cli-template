@@ -47,63 +47,56 @@ minversion = "7.4.0"
 pythonpath = "src"
 addopts = "-vv --import-mode=importlib"
 
-[tool.poe.tasks]
+[tool.poetry.scripts]
 package-name = "package_name.cli:run"
 
 [tool.poe.tasks.test]
-help = "Run application tests"
-control.expr = "suite"
-args = [{ name = "suite", help = "Filter tests based on suite name: [all|e2e|integration|unit]" }]
+help = "Default: Run integration tests with coverage"
+sequence = ["test-integration"]
 
-  [[tool.poe.tasks.test.switch]]
-  case = "all"
-  help = "Run all tests (without coverage)"
-  cmd = "pytest"
+[tool.poe.tasks.test-all]
+help = "Run application test suites"
+sequence = ["test-unit", "test-integration", "test-e2e"]
 
-  [[tool.poe.tasks.test.switch]]
-  case = "e2e"
-  help = "Run e2e tests only"
-  cmd = "pytest tests/e2e"
+[tool.poe.tasks.test-e2e]
+help = "Run e2e tests only"
+cmd = "pytest tests/e2e"
 
-  [[tool.poe.tasks.test.switch]]
-  case = "integration"
-  help = "Run integration tests only (with coverage)"
-  cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/integration"
+[tool.poe.tasks.test-integration]
+help = "Run integration tests only (with coverage)"
+cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/integration"
 
-  [[tool.poe.tasks.test.switch]]
-  case = "unit"
-  help = "Run unit tests only (with coverage)"
-  cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit"
-
-  [[tool.poe.tasks.test.switch]]
-  help = "Default: Run unit and integration tests with coverage"
-  cmd = "pytest --cov=src/package_name --cov-fail-under=90 --cov=src/package_name --cov-branch --cov-report term-missing:skip-covered tests/unit tests/integration"
+[tool.poe.tasks.test-unit]
+help = "Run unit tests only"
+cmd = "pytest tests/unit"
 
 [tool.poe.tasks.check]
 help = "Check code quality"
-control.expr = "type"
-args = [{ name = "type", help = "Type of code check to run: [lint|format]" }]
+sequence = ["format", "lint"]
 
-  [[tool.poe.tasks.check.switch]]
-  case = "lint"
-  help = "Run linting checks only "
-  cmd = "pylint --verbose --score y src tests"
+[tool.poe.tasks.lint]
+help = "Run all linting tools against codebase"
+sequence = ["lint-pylint"]
 
-  [[tool.poe.tasks.check.switch]]
-  case = "format"
-  help = "Run formatting checks only"
-  shell = """
-  black --check --line-length 100 .
-  npx --yes prettier@3.0.3 . --no-config --check
-  """
+[tool.poe.tasks.lint-pylint]
+help = "Lint Python source code and tests with pylint"
+cmd = "pylint --verbose --score y src tests"
 
-  [[tool.poe.tasks.check.switch]]
-  help = "Default: Run formatting and linting checks"
-  shell = """
-  black --check --line-length 100 .
-  npx --yes prettier@3.0.3 . --no-config --check
-  pylint --verbose --score y src tests
-  """
+[tool.poe.tasks.format]
+help = "Run all formatting tools against codebase"
+sequence = ["format-black", "format-prettier"]
+
+[tool.poe.tasks.format-black]
+help = "Run black against Python source code"
+cmd = "black --check --line-length 100 ."
+
+[tool.poe.tasks.format-prettier]
+help = "Run prettier against non-Python code"
+cmd = "npx --yes prettier@3.0.3 . --no-config --check"
+
+[tool.poe.tasks.package-name]
+help = "Execute package-name from this repo (useful for testing)"
+script = "package_name.cli:run"
 
 [build-system]
 requires = ["poetry-core"]
