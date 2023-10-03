@@ -49,6 +49,8 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_GPG_PRIVATE_KEY }}
           GPG_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SERVICE_ACCOUNT_GPG_PASSPHRASE }}
+          SERVICE_ACCOUNT_USERNAME: ${{ env.SERVICE_ACCOUNT_USERNAME }}
+          SERVICE_ACCOUNT_EMAIL_ADDRESS: ${{ env.SERVICE_ACCOUNT_EMAIL_ADDRESS }}
         run: |
           echo "$GPG_PRIVATE_KEY" | gpg --import --pinentry-mode loopback --passphrase "$GPG_PRIVATE_KEY_PASSPHRASE"
           key_metadata=$(gpg --with-colons --with-keygrip --list-secret-keys $SERVICE_ACCOUNT_EMAIL_ADDRESS)
